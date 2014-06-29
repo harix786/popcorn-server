@@ -1,3 +1,5 @@
+// PORT-TODO: Database needs to be on server, or possibly client webSQL or something
+// https://github.com/louischatriot/nedb#browser-version
 var
 	async = require('async'),
 	request = require('request'),

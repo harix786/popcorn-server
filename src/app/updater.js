@@ -1,3 +1,4 @@
+// PORT-TODO: Rip out updater
 function testInstalled() {
 	return(!_.contains(require('fs').readdirSync('.'), '.git') || // Test Development
 		( // Test Windows

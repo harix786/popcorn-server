@@ -108,7 +108,7 @@ if(process.platform === 'win32' && parseFloat(os.release(), 10) > 6.1) {
 
 */
 // Create the System Temp Folder. This is used to store temporary data like movie files.
-if(!fs.existsSync(App.settings.tmpLocation)) {
+if(!fs.existsSync(App.settings.tmpLocation)) { // PORT-TODO: Temp location needs to be on server
 	fs.mkdir(App.settings.tmpLocation);
 }
 
@@ -213,7 +213,7 @@ var startTorrentStream = function(torrentFile) {
 	App.vent.trigger('stream:start', torrentStart);
 };
 
-holder.ondrop = function (e) {
+holder.ondrop = function (e) { // PORT-TODO: Handle dropped torrent files
 	e.preventDefault();
 
 	var file = e.dataTransfer.files[0];

@@ -75,8 +75,8 @@ var AdvSettings = {
 	},
 
 	setup: function (callback) {
-		AdvSettings.performUpgrade();
-		AdvSettings.getHardwareInfo(callback);
+		//AdvSettings.performUpgrade();
+		//AdvSettings.getHardwareInfo(callback);
 	},
 
 	getHardwareInfo: function (callback) {

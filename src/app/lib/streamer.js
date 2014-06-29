@@ -16,7 +16,7 @@
     var subtitles = null;
     var hasSubtitles = false;
 
-
+    // TODO-PORT: State needs to be watched on the server, messages sent over websocket
     var watchState = function(stateModel) {
 
         if (engine != null) {
@@ -51,6 +51,7 @@
 
         win.debug('Streaming movie to %s', tmpFile);
 
+        // TODO-PORT: This happens on the server
         engine = peerflix(torrent.info, {
             connections: parseInt(Settings.connectionLimit, 10) || 100, // Max amount of peers to be connected to.
             dht: parseInt(Settings.dhtLimit, 10) || 50,
@@ -66,14 +67,18 @@
             engine.swarm.piecesGot += 1;
         });
 
+        // TODO-PORT: Replace engine with some websocket type thing
         var streamInfo = new App.Model.StreamInfo({engine: engine});
 
         // Fix for loading modal
         streamInfo.updateStats(engine);
         
+        // TODO-PORT: wont need to poll, should listen for events on socket
         statsUpdater = setInterval(_.bind(streamInfo.updateStats, streamInfo, engine), 3000);
         stateModel.set('streamInfo', streamInfo);
         stateModel.set('state', 'connecting');
+        
+        // TODO-PORT: Dont need to do this on the client
         watchState(stateModel);
 
         var checkReady = function() {
@@ -88,17 +93,23 @@
             }
         };
 
+        // TODO-PORT when we get http responce from server
         engine.server.on('listening', function(){
             if(engine) {
+                // TODO-PORT This wont really change much, use url from result json
                 streamInfo.set('src', 'http://127.0.0.1:' + engine.server.address().port + '/');
                 streamInfo.set('type', 'video/mp4');
 
                 // TEST for custom NW
                 //streamInfo.set('type', mime.lookup(engine.server.index.name));
+
+                // TODO-PORT need to hookup websocket instead here to listen for events. streamInfo stuff needs to move down here
                 stateModel.on('change:state', checkReady);
                 checkReady();
             }
         });
+
+        // TODO-PORT servers job
 
         // not used anymore
         engine.on('ready', function() {});
@@ -129,6 +140,7 @@
             var stateModel = new Backbone.Model({state: 'connecting', backdrop: model.get('backdrop')});
             App.vent.trigger('stream:started', stateModel);
 
+            // TODO-PORT: If we currently have a websocket, say bye
             if(engine) {
                 Streamer.stop();
             }
@@ -263,6 +275,7 @@
             };
 
             if(!torrent_read) {
+                // TODO-PORT: Probably want to avoid this. Not sure. Hopefully we can pass the torrents to the server and it tells us about them
                 readTorrent(torrentUrl, doTorrent);
             }
             else {
@@ -274,7 +287,7 @@
 
         stop: function() {
             this.stop_ = true;
-            if (engine) {
+            if (engine) { // TODO-PORT: if websocket, say bye
                 if(engine.server._handle) {
                     engine.server.close();
                 }
